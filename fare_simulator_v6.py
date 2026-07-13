@@ -779,6 +779,8 @@ else:
 def gross_fare_krw(ppu, ppm, dur, glide_pct, subs_pct):
     return ppu * (1 - glide_pct/100 - subs_pct/100) + ppm * dur
 
+glide_changed = (prop_glide_day != cur_glide_day) or (prop_glide_night != cur_glide_night)
+
 # ── City-wide 계산 (예전 로직) ──
 city_changed = False
 city_pricing_change_rate = 0
@@ -831,8 +833,9 @@ for opz in price_opz_list:
         opz_prop_glide_day = round(opz_cur_glide_day * ratio, 2)
         opz_prop_glide_night = round(opz_cur_glide_night * ratio, 2)
 
-    day_weight   = get_opz_trip_weight(df_glide_opz, opz, "DAY") / 100
-    night_weight = get_opz_trip_weight(df_glide_opz, opz, "NIGHT") / 100
+    city_grand_total_trips = df_glide_opz["total_trips"].sum()
+    day_weight   = opz_day_total / city_grand_total_trips   if city_grand_total_trips > 0 else 0
+    night_weight = opz_night_total / city_grand_total_trips if city_grand_total_trips > 0 else 0
 
     opz_cur_fare_krw += (
         gross_fare_krw(cur_p['ppu_day'],   cur_p['ppm_day'],   cur_duration, opz_cur_glide_day,   subs_day)   * day_weight +
@@ -864,10 +867,13 @@ if opz_any_changed:
 elif city_changed:
     pricing_change_rate = city_pricing_change_rate
     price_source = "city"
+elif glide_changed:
+    pricing_change_rate = opz_pricing_change_rate if opz_change_detail else city_pricing_change_rate
+    price_source = "opz" if opz_change_detail else "city"
 else:
     pricing_change_rate = 0
     price_source = "none"
-
+    
 prop_net_avg_fare = cur_net_avg_fare * (1 + pricing_change_rate)
 
 if opz_any_changed and city_changed:

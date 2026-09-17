@@ -215,6 +215,8 @@ def get_sub_metrics(df_sub, city, week_num):
 day_pct, night_pct, subs_day, subs_night = get_sub_metrics(df_sub, selected_city, week_num)
 day_pct_calc   = day_pct   if day_pct   is not None else 0
 night_pct_calc = night_pct if night_pct is not None else 0
+subs_day   = subs_day   if subs_day   is not None else 0
+subs_night = subs_night if subs_night is not None else 0
 
 def get_glide_by_opz(df_glide, city, week_num):
     try:

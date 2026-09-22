@@ -1032,12 +1032,7 @@ if city_price_row is not None:
     
     city_pricing_change_rate = (city_prop_fare_krw - city_cur_fare_krw) / city_cur_fare_krw if city_cur_fare_krw > 0 else 0
 
-    st.write("DEBUG city", {
-        "day_pct": day_pct, "night_pct": night_pct,
-        "day_pct_calc": day_pct_calc, "night_pct_calc": night_pct_calc,
-        "city_cur_fare_krw": city_cur_fare_krw,
-        "city_prop_fare_krw": city_prop_fare_krw,
-    })
+
 
 # ── OPZ별 계산 ──
 opz_cur_fare_krw  = 0
@@ -1128,20 +1123,7 @@ if opz_any_changed and city_changed:
 # ══════════════════════════════════════════════════════
 st.markdown("---")
 st.markdown('<div class="result-header">📊 Simulation Result</div>', unsafe_allow_html=True)
-
-st.write("DEBUG", {
-    "opz_any_changed": opz_any_changed,
-    "city_changed": city_changed,
-    "glide_changed": glide_changed,
-    "price_source": price_source,
-    "pricing_change_rate": pricing_change_rate,
-    "opz_cur_fare_krw": opz_cur_fare_krw,
-    "opz_prop_fare_krw": opz_prop_fare_krw,
-    "opz_hour_limits": opz_hour_limits,
-})
-for opz, v in opz_change_detail.items():
-    st.write(opz, v)
-    
+  
 glide_changed = (prop_glide_day != cur_glide_day) or (prop_glide_night != cur_glide_night)
 price_changed = opz_any_changed or city_changed
 ppu_changed   = (any(v["ppu_changed"] for v in opz_change_detail.values()) if opz_change_detail else False) or \
